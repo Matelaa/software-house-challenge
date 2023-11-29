@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+class VideoService {
+    
+    func fetchImageFromURL(url: URL, completion: @escaping (Data?, Error?) -> Void) {
+        let session = URLSession.shared
+        let task = session.dataTask(with: url) { data, response, error in
+            completion(data, error)
+        }
+        task.resume()
+    }
+}
