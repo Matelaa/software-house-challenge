@@ -62,13 +62,14 @@ class VideoViewController: UIViewController {
 
 extension VideoViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.viewModel.video.count
+        return self.viewModel.videos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "videoCell", for: indexPath) as! VideoCollectionViewCell
         
-        cell.setupPlayer(video: self.viewModel.video[indexPath.item])
+        cell.delegate = self
+        cell.setupPlayer(video: self.viewModel.videos[indexPath.item])
         
         if indexPath == self.visibleIndexPath {
             cell.play()
@@ -121,13 +122,28 @@ extension VideoViewController: UIScrollViewDelegate {
         if let indexPath = collectionView.indexPathForItem(at: center) {
             visibleIndexPath = indexPath
             
-            for (index, _) in self.viewModel.video.enumerated() {
+            for (index, _) in self.viewModel.videos.enumerated() {
                 if index != indexPath.item {
                     if let cell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? VideoCollectionViewCell {
                         cell.resetPlayer()
                     }
                 }
             }
+        }
+    }
+}
+
+extension VideoViewController: VideocCollectionViewCellDelegate {
+    func setupImageFromData(in cell: VideoCollectionViewCell, url: URL) {
+        self.viewModel.loadImageFromURL(url: url) { data in
+            cell.configureUserImage(data: data)
+        }
+    }
+    
+    func increaseReactionOfVideo(in cell: VideoCollectionViewCell, tag: Int) {
+        if let indexPath = self.collectionView.indexPath(for: cell) {
+            self.viewModel.increaseHeartOrFireCount(tag: tag, video: self.viewModel.videos[indexPath.item])
+            cell.updateCountLabels(video: self.viewModel.videos[indexPath.item])
         }
     }
 }
