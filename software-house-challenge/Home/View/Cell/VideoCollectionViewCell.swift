@@ -9,6 +9,11 @@ import AVFoundation
 import AVKit
 import UIKit
 
+protocol VideocCollectionViewCellDelegate: AnyObject {
+    func setupImageFromData(in cell: VideoCollectionViewCell, url: URL)
+    func increaseReactionOfVideo(in cell: VideoCollectionViewCell, tag: Int)
+}
+
 class VideoCollectionViewCell: UICollectionViewCell {
     
     private lazy var userImageView: UIImageView = {
@@ -29,8 +34,8 @@ class VideoCollectionViewCell: UICollectionViewCell {
     private lazy var heartIconImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "heart.circle"))
         imageView.tintColor = .red
+        imageView.tag = 1
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         return imageView
     }()
     
@@ -46,6 +51,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
     private lazy var fireIconImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "flame.circle"))
         imageView.tintColor = .orange
+        imageView.tag = 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -78,38 +84,45 @@ class VideoCollectionViewCell: UICollectionViewCell {
     private var fireCount = 0
     
     var video: Video!
-    let viewModel = VideoViewModel()
+    
+    weak var delegate: VideocCollectionViewCellDelegate?
     
     @objc private func swipeLeft() {
         self.performSwipeAnimation(translation: -bounds.width * 0.2)
-        self.fireCount += 1
-        self.updateCountLabels()
+        self.delegate?.increaseReactionOfVideo(in: self, tag: self.fireIconImageView.tag)
     }
-
+    
     @objc private func swipeRight() {
         self.performSwipeAnimation(translation: bounds.width * 0.2)
-        self.heartCount += 1
-        self.updateCountLabels()
+        self.delegate?.increaseReactionOfVideo(in: self, tag: self.heartIconImageView.tag)
     }
     
     @objc private func handleHeartTap() {
-        self.heartCount += 1
-        self.updateCountLabels()
+        self.delegate?.increaseReactionOfVideo(in: self, tag: self.heartIconImageView.tag)
     }
     
     @objc private func handleFireTap() {
-        self.fireCount += 1
-        self.updateCountLabels()
+        self.delegate?.increaseReactionOfVideo(in: self, tag: self.fireIconImageView.tag)
     }
     
-    private func updateCountLabels() {
-        self.heartCountLabel.text = "\(heartCount)"
-        self.fireCountLabel.text = "\(fireCount)"
+    func configureUserImage(data: Data) {
+        //        DispatchQueue.main.async {
+        //            self.userImageView.image = UIImage(data: data)
+        //        }
+        DispatchQueue.main.async {
+            self.userImageView.image = UIImage(data: data)
+        }
+    }
+    
+    func updateCountLabels(video: Video) {
+        self.video = video
+        self.heartCountLabel.text = String(self.video.heartCount)
+        self.fireCountLabel.text = String(self.video.fireCount)
     }
     
     private func performSwipeAnimation(translation: CGFloat) {
         let maxIconTranslation: CGFloat = 80
-
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.transform = CGAffineTransform(translationX: translation, y: 0)
             
@@ -157,13 +170,15 @@ class VideoCollectionViewCell: UICollectionViewCell {
         
         self.video = video
         
-        self.viewModel.loadImageFromURL(url: URL(string: self.video.profilePictureURL)!) { data in
-            DispatchQueue.main.async {
-                self.userImageView.image = UIImage(data: data)
-            }
+        let profilePictureURL = URL(string: self.video.profilePicture)
+        if let profilePictureURL = profilePictureURL {
+            self.delegate?.setupImageFromData(in: self, url: profilePictureURL)
         }
         
         self.videoTitleLabel.text = self.video.body
+        
+        self.heartCountLabel.text = String(self.video.heartCount)
+        self.fireCountLabel.text = String(self.video.fireCount)
         
         guard let videoURL = URL(string: self.video.compressedForIosURL),
               let audioURL = URL(string: self.video.songURL) else {
@@ -268,7 +283,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
             self.fireIconImageView.heightAnchor.constraint(equalToConstant: 48),
             self.fireIconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             self.fireIconImageView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -12),
-
+            
             self.fireCountLabel.centerXAnchor.constraint(equalTo: fireIconImageView.centerXAnchor),
             self.fireCountLabel.bottomAnchor.constraint(equalTo: fireIconImageView.topAnchor, constant: -5),
         ])
