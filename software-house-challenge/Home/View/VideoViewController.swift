@@ -97,18 +97,18 @@ extension VideoViewController: UICollectionViewDataSource, UICollectionViewDeleg
 
 extension VideoViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let indexPath = visibleIndexPath,
-           let cell = collectionView.cellForItem(at: indexPath) as? VideoCollectionViewCell {
+        if let indexPath = self.visibleIndexPath,
+           let cell = self.collectionView.cellForItem(at: indexPath) as? VideoCollectionViewCell {
             cell.pause()
         }
         
-        let center = CGPoint(x: collectionView.center.x + collectionView.contentOffset.x,
-                             y: collectionView.center.y + collectionView.contentOffset.y)
+        let center = CGPoint(x: self.collectionView.center.x + self.collectionView.contentOffset.x,
+                             y: self.collectionView.center.y + self.collectionView.contentOffset.y)
         
-        if let indexPath = collectionView.indexPathForItem(at: center) {
+        if let indexPath = self.collectionView.indexPathForItem(at: center) {
             self.visibleIndexPath = indexPath
             
-            if let cell = collectionView.cellForItem(at: indexPath) as? VideoCollectionViewCell {
+            if let cell = self.collectionView.cellForItem(at: indexPath) as? VideoCollectionViewCell {
                 cell.play()
             }
         }
@@ -116,15 +116,15 @@ extension VideoViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
-        let center = CGPoint(x: collectionView.center.x + collectionView.contentOffset.x,
-                             y: collectionView.center.y + collectionView.contentOffset.y)
+        let center = CGPoint(x: self.collectionView.center.x + self.collectionView.contentOffset.x,
+                             y: self.collectionView.center.y + self.collectionView.contentOffset.y)
         
-        if let indexPath = collectionView.indexPathForItem(at: center) {
-            visibleIndexPath = indexPath
+        if let indexPath = self.collectionView.indexPathForItem(at: center) {
+            self.visibleIndexPath = indexPath
             
             for (index, _) in self.viewModel.videos.enumerated() {
                 if index != indexPath.item {
-                    if let cell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? VideoCollectionViewCell {
+                    if let cell = self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? VideoCollectionViewCell {
                         cell.resetPlayer()
                     }
                 }

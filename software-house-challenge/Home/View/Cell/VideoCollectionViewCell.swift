@@ -273,16 +273,16 @@ class VideoCollectionViewCell: UICollectionViewCell {
             self.heartIconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             self.heartIconImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 12),
             
-            self.heartCountLabel.centerXAnchor.constraint(equalTo: heartIconImageView.centerXAnchor),
-            self.heartCountLabel.bottomAnchor.constraint(equalTo: heartIconImageView.topAnchor, constant: -5),
+            self.heartCountLabel.centerXAnchor.constraint(equalTo: self.heartIconImageView.centerXAnchor),
+            self.heartCountLabel.bottomAnchor.constraint(equalTo: self.heartIconImageView.topAnchor, constant: -5),
             
             self.fireIconImageView.widthAnchor.constraint(equalToConstant: 48),
             self.fireIconImageView.heightAnchor.constraint(equalToConstant: 48),
             self.fireIconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             self.fireIconImageView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -12),
             
-            self.fireCountLabel.centerXAnchor.constraint(equalTo: fireIconImageView.centerXAnchor),
-            self.fireCountLabel.bottomAnchor.constraint(equalTo: fireIconImageView.topAnchor, constant: -5),
+            self.fireCountLabel.centerXAnchor.constraint(equalTo: self.fireIconImageView.centerXAnchor),
+            self.fireCountLabel.bottomAnchor.constraint(equalTo: self.fireIconImageView.topAnchor, constant: -5),
         ])
     }
     
