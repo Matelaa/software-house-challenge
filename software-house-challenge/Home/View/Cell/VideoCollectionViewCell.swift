@@ -106,9 +106,6 @@ class VideoCollectionViewCell: UICollectionViewCell {
     }
     
     func configureUserImage(data: Data) {
-        //        DispatchQueue.main.async {
-        //            self.userImageView.image = UIImage(data: data)
-        //        }
         DispatchQueue.main.async {
             self.userImageView.image = UIImage(data: data)
         }
