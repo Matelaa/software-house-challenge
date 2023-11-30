@@ -1,6 +1,8 @@
 # software-house-challenge
 An app developed for the Software House challenge, a "clone" of the tiktok home page.
 
+## Demo
+![DEMO%20CHALLENGE-2](https://github.com/Matelaa/software-house-challenge/assets/37427070/555cfef8-20bc-4273-a62a-1fad5bda6669)
 
 ## Features
 * [X] A video feed where each video occupies the full area of the screen and can be swiped up and down with the same edge-to-edge (peeking) gesture as TikTok.
